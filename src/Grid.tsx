@@ -102,7 +102,7 @@ export default function Grid() {
           storeColumnsKey={key}
           withColumnBorders
           records={companies}
-          columns={effectiveColumns}
+          columns={columns}
           selectedRecords={selectedRecords}
           selectionTrigger='cell'
           onSelectedRecordsChange={setSelectedRecords}
