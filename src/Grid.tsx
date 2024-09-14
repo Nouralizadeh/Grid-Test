@@ -1,91 +1,85 @@
 import React, {useState} from 'react'
 import { companies, type Company } from './Companies'
 import { DataTable, DataTableColumn, useDataTableColumns } from 'mantine-datatable';
-import { Text, Group, Button } from '@mantine/core';
-import { IconBuildingSkyscraper, IconRoadSign, IconBuildingCommunity, IconMap } from '@tabler/icons-react';
+import { Chip , Group, Button, Menu } from '@mantine/core';
+import { IconPlus } from '@tabler/icons-react';
 const key = 'draggable-example';
 
 
 export default function Grid() {
-  const [columns, setColumns] = useState<DataTableColumn[]>([
+  const mainColumn: DataTableColumn[] = [
     {
       accessor: 'name',
       draggable: true, 
       resizable: true,
-      title: (
-        <Group gap={4} mt={-1}>
-          <IconBuildingSkyscraper size={16} />
-          <Text inherit mt={1}>
-            Company
-          </Text>
-        </Group>
-      ),
-      width: '40%',
+      title: 'name',
       toggleable: true,
-      defaultToggle: false,
     },
     {
       accessor: 'streetAddress',
       draggable: true, 
       resizable: true,
-      title: (
-        <Group gap={4} mt={-1}>
-          <IconRoadSign size={16} />
-          <Text inherit mt={1}>
-            Street Address
-          </Text>
-        </Group>
-      ),
-      width: '60%',
+      title: 'streetAddress',
       toggleable: true,
     },
     {
       accessor: 'city',
       draggable: true, 
       resizable: true,
-      title: (
-        <Group gap={4} mt={-1}>
-          <IconBuildingCommunity size={16} />
-          <Text inherit mt={1}>
-            City
-          </Text>
-        </Group>
-      ),
-      width: 160,
       toggleable: true,
+      title: "city",
+
+    },{
+      accessor: 'missionStatement',
+      textAlign: 'right',
+      draggable: true, 
+      resizable: true,
+      toggleable: true,
+      title: "missionStatement",
     },
     {
       accessor: 'state',
       textAlign: 'right',
-      title: (
-        <Group justify="right">
-          <IconMap size={16} />
-        </Group>
-      ),
+      title: 'state',
     },
-  ]);
+  ]
+  const [columns, setColumns] = useState<DataTableColumn[]>(mainColumn);
   const { effectiveColumns, resetColumnsOrder, resetColumnsToggle } = useDataTableColumns<Company>({
     key,
     columns: columns
   });
 
-  function toggleColumnMissionStatement() {
-    const newColumns = columns.filter((col) => col.accessor !== 'missionStatement');
+  const columnMenu = (): JSX.Element =>
+    <Menu shadow="md" width={200}>
+      <Menu.Target>
+        <Button><IconPlus /></Button>
+      </Menu.Target>
+      <Menu.Dropdown>
+        {
+          mainColumn.map(({ accessor }) =>
+            <Menu.Item key={accessor} >
+              <Chip checked={columns.findIndex(c => c.accessor == accessor) != -1} onChange={() => toggleColumn(accessor)}>
+              {accessor}
+              </Chip>
+            </Menu.Item>
+          )}
+      </Menu.Dropdown>
+    </Menu>
+      
+
+  function toggleColumn(columnName: string) {
+    const newColumns = columns.filter((col) => col.accessor !== columnName);
+
     if (columns.length === newColumns.length) {
-      newColumns.push({
-        accessor: 'missionStatement',
-        title: (
-          <Group gap={4} mt={-1} wrap="nowrap">
-            <IconBuildingSkyscraper size={16} />
-            <Text inherit mt={1}>
-              Mission Statement
-            </Text>
-          </Group>
-        ),
-        width: '40%',
-        toggleable: true,
-        defaultToggle: true,
-      });
+      const primaryIndex = mainColumn.findIndex(c => c.accessor == columnName)
+      let previousCol = primaryIndex - 1
+      let trueIndex = -1
+      while (primaryIndex > 0 && previousCol > -1 && trueIndex == -1) {
+        trueIndex = columns.findIndex(c => c.accessor == mainColumn[previousCol].accessor)
+        previousCol--
+      }
+      trueIndex++;
+      newColumns.splice(trueIndex, 0, mainColumn[primaryIndex]);
     }
     setColumns(newColumns);
   }
@@ -95,9 +89,10 @@ export default function Grid() {
 
     return (
       <>
-        <Group>
-          <Button onClick={toggleColumnMissionStatement}>Toggle Mission Statement column</Button>
+        <Group justify="right">
           <Button onClick={resetColumnsToggle}>Reset toggled columns</Button>
+          <Button onClick={resetColumnsOrder}>Reset columns order</Button>
+          {columnMenu()}
         </Group>
         <DataTable
           striped
@@ -113,9 +108,6 @@ export default function Grid() {
           onSelectedRecordsChange={setSelectedRecords}
           rowColor={(r) => { if (selectedRecords.find((a => a?.name == r.name))) return "blue" }}
         />
-        <Group justify="right">
-          <Button onClick={resetColumnsOrder}>Reset Column Order</Button>
-        </Group>
       </>
   )
 }
