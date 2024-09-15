@@ -1,9 +1,10 @@
-import React, {useState} from 'react'
+import React, { useEffect, useState } from 'react'
 import { companies, type Company } from './Companies'
 import { DataTable, DataTableColumn, useDataTableColumns } from 'mantine-datatable';
 import { Chip , Group, Button, Menu } from '@mantine/core';
-import { IconPlus } from '@tabler/icons-react';
+import { IconFileCertificate, IconPlus } from '@tabler/icons-react';
 const key = 'draggable-example';
+import { DragableList } from './DragableMenu';
 
 
 export default function Grid() {
@@ -13,21 +14,21 @@ export default function Grid() {
       draggable: true, 
       resizable: true,
       title: 'name',
-      toggleable: true,
+      toggleable: true
     },
     {
       accessor: 'streetAddress',
       draggable: true, 
       resizable: true,
       title: 'streetAddress',
-      toggleable: true,
+      toggleable: true
     },
     {
       accessor: 'city',
       draggable: true, 
       resizable: true,
       toggleable: true,
-      title: "city",
+      title: "city"
 
     },{
       accessor: 'missionStatement',
@@ -35,19 +36,23 @@ export default function Grid() {
       draggable: true, 
       resizable: true,
       toggleable: true,
-      title: "missionStatement",
+      title: "missionStatement"
     },
     {
       accessor: 'state',
       textAlign: 'right',
-      title: 'state',
+      title: 'state'
     },
   ]
+
+  
   const [columns, setColumns] = useState<DataTableColumn[]>(mainColumn);
-  const { effectiveColumns, resetColumnsOrder, resetColumnsToggle } = useDataTableColumns<Company>({
+  const { effectiveColumns, columnsToggle, resetColumnsOrder, resetColumnsToggle, setColumnsOrder, setColumnsToggle } = useDataTableColumns<Company>({
     key,
     columns: columns
   });
+
+  
 
   const columnMenu = (): JSX.Element =>
     <Menu shadow="md" width={200}>
@@ -55,33 +60,15 @@ export default function Grid() {
         <Button><IconPlus /></Button>
       </Menu.Target>
       <Menu.Dropdown>
-        {
-          mainColumn.map(({ accessor }) =>
-            <Menu.Item key={accessor} >
-              <Chip checked={columns.findIndex(c => c.accessor == accessor) != -1} onChange={() => toggleColumn(accessor)}>
-              {accessor}
-              </Chip>
-            </Menu.Item>
-          )}
+        <DragableList columns={columnsToggle} setColumnsOrder={setColumnsOrder} onClick={toggleColumn}/>
       </Menu.Dropdown>
     </Menu>
       
 
   function toggleColumn(columnName: string) {
-    const newColumns = columns.filter((col) => col.accessor !== columnName);
-
-    if (columns.length === newColumns.length) {
-      const primaryIndex = mainColumn.findIndex(c => c.accessor == columnName)
-      let previousCol = primaryIndex - 1
-      let trueIndex = -1
-      while (primaryIndex > 0 && previousCol > -1 && trueIndex == -1) {
-        trueIndex = columns.findIndex(c => c.accessor == mainColumn[previousCol].accessor)
-        previousCol--
-      }
-      trueIndex++;
-      newColumns.splice(trueIndex, 0, mainColumn[primaryIndex]);
-    }
-    setColumns(newColumns);
+    const index = columnsToggle.findIndex(c => c.accessor == columnName)
+    columnsToggle[index].toggled = !columnsToggle[index].toggled
+    setColumnsToggle([...columnsToggle]);
   }
 
     const [selectedRecords, setSelectedRecords] = useState<Company[]>([]);
@@ -90,8 +77,6 @@ export default function Grid() {
     return (
       <>
         <Group justify="right">
-          <Button onClick={resetColumnsToggle}>Reset toggled columns</Button>
-          <Button onClick={resetColumnsOrder}>Reset columns order</Button>
           {columnMenu()}
         </Group>
         <DataTable

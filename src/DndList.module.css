@@ -1,0 +1,11 @@
+.item {
+    display: flex;
+    align-items: center;
+    background-color: light-dark(var(--mantine-color-white), var(--mantine-color-dark-5));
+    margin-bottom: var(--mantine-spacing-sm);
+    width: fit-content;
+  }
+  
+  .itemDragging {
+    box-shadow: var(--mantine-shadow-sm);
+  }
