@@ -1,9 +1,10 @@
 import cx from 'clsx';
 import {useEffect} from 'react'
-import { Chip, Text } from '@mantine/core';
+import { Chip, rem, Text } from '@mantine/core';
 import { useListState } from '@mantine/hooks';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import classes from './DndList.module.css';
+import { IconGripVertical } from '@tabler/icons-react';
 
 
 interface Props {
@@ -21,14 +22,14 @@ export function DragableList({data, setData, onClick} : Props) {
         <div
           className={cx(classes.item, { [classes.itemDragging]: snapshot.isDragging })}
           {...provided.draggableProps}
-          {...provided.dragHandleProps}
           ref={provided.innerRef}
         >
-          <div>
+          <div {...provided.dragHandleProps} className={classes.dragHandle}>
+            <IconGripVertical style={{ width: rem(18), height: rem(18) }} stroke={1.5} />
+          </div>
           <Chip checked={item.visible} onChange={() => onClick(item.accessor)}>
               {item.accessor}
               </Chip>
-          </div>
         </div>
       )}
     </Draggable>
