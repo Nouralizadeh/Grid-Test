@@ -8,13 +8,13 @@ import { IconGripVertical } from '@tabler/icons-react';
 
 
 interface Props {
-    data:any[];
-    setData: (data: any) => void;
+    columns:any[];
+    setColumnsOrder: (data: any) => void;
     onClick: (col: string) => void;
 }
 
-export function DragableList({data, setData, onClick} : Props) {
-  const [state, handlers] = useListState(data);
+export function DragableList({columns, setColumnsOrder, onClick} : Props) {
+  const [state, handlers] = useListState(columns);
 
   const items = state.map((item, index) => (
     <Draggable key={item.accessor} index={index} draggableId={item.accessor}>
@@ -27,7 +27,7 @@ export function DragableList({data, setData, onClick} : Props) {
           <div {...provided.dragHandleProps} className={classes.dragHandle}>
             <IconGripVertical style={{ width: rem(18), height: rem(18) }} stroke={1.5} />
           </div>
-          <Chip checked={item.visible} onChange={() => onClick(item.accessor)}>
+          <Chip checked={item.toggled} onChange={() => onClick(item.accessor)}>
               {item.accessor}
               </Chip>
         </div>
@@ -36,7 +36,7 @@ export function DragableList({data, setData, onClick} : Props) {
   ));
 
   useEffect(() => {
-    setData(state);
+    setColumnsOrder(state.map(c => c.accessor));
 
   }, [state])
   
