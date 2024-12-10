@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { companies, type Company } from './Companies'
 import { DataTable, DataTableColumn, useDataTableColumns } from 'mantine-datatable';
-import { Chip , Group, Button, Menu } from '@mantine/core';
-import { IconFileCertificate, IconPlus } from '@tabler/icons-react';
+import { Menu } from '@mantine/core';
+import { IconPlus } from '@tabler/icons-react';
 const key = 'draggable-example';
 import { DragableList } from './DragableMenu';
 
 
 export default function Grid() {
-  const mainColumn: DataTableColumn[] = [
+  const columns :DataTableColumn<Company>[] = [
     {
       accessor: 'name',
       draggable: true, 
@@ -30,7 +30,13 @@ export default function Grid() {
       toggleable: true,
       title: "city"
 
-    },{
+    },
+    {
+      accessor: 'state',
+      textAlign: 'right',
+      title: 'state'
+    },
+    {
       accessor: 'missionStatement',
       textAlign: 'right',
       draggable: true, 
@@ -38,32 +44,25 @@ export default function Grid() {
       toggleable: true,
       title: "missionStatement"
     },
-    {
-      accessor: 'state',
-      textAlign: 'right',
-      title: 'state'
-    },
   ]
 
-  
-  const [columns, setColumns] = useState<DataTableColumn[]>(mainColumn);
-  const { effectiveColumns, columnsToggle, resetColumnsOrder, resetColumnsToggle, setColumnsOrder, setColumnsToggle } = useDataTableColumns<Company>({
+  const { effectiveColumns, columnsToggle, columnsOrder,  setColumnsOrder, setColumnsToggle } = useDataTableColumns<Company>({
     key,
-    columns: columns
+    columns: [...columns, {
+      accessor: 'Columns',
+      title:  ""
+    }]
   });
-
-  
 
   const columnMenu = (): JSX.Element =>
     <Menu shadow="md" width={200}>
-      <Menu.Target>
-        <Button><IconPlus /></Button>
-      </Menu.Target>
+      <Menu.Target><IconPlus size={30}/></Menu.Target>
       <Menu.Dropdown>
-        <DragableList columns={columnsToggle} setColumnsOrder={setColumnsOrder} onClick={toggleColumn}/>
+        <DragableList columns={columnsToggle} order ={columnsOrder} setOrder={setColumnsOrder} onClick={toggleColumn}/>
       </Menu.Dropdown>
     </Menu>
-      
+
+    effectiveColumns[effectiveColumns.length -1 ].title = columnMenu()  
 
   function toggleColumn(columnName: string) {
     const index = columnsToggle.findIndex(c => c.accessor == columnName)
@@ -76,9 +75,6 @@ export default function Grid() {
 
     return (
       <>
-        <Group justify="right">
-          {columnMenu()}
-        </Group>
         <DataTable
           striped
           highlightOnHover
