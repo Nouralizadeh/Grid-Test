@@ -7,8 +7,6 @@ import Column from "../Column";
 import { MantineProvider } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { Product } from "../GridData";
-import NumberBox from "#pretty/NumberBox";
-import TextBox from "#pretty/TextBox";
 import { DataTableSortStatus } from "mantine-datatable";
 import {sortBy} from 'lodash';
 
@@ -57,13 +55,9 @@ export const WithCustomRender = () => {
         <Grid gridData={data} idAccessor={"Id"} >
           <Column key={"Id"} accessor={"Id"} />
           <Column key={"ProductName"}
-                  accessor={"ProductName"}
-                  render={(cellProps?: any) => (<TextBox {...cellProps} />)} />
+                  accessor={"ProductName"} />
           <Column key={"SupplierId"}
-                  accessor={"SupplierId"}
-                  render={(cellProps?: any) => ( <NumberBox thousandSeparator={true}
-                                                            {...cellProps}
-                                                            decimalPlaces={2} /> )} />
+                  accessor={"SupplierId"} />
           <Column key={"CategoryId"} accessor={"CategoryId"} />
           <Column key={"QuantityPerUnit"} accessor={"QuantityPerUnit"} />
           <Column key={"UnitPrice"}
