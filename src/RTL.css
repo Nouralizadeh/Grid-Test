@@ -1,0 +1,75 @@
+.mantine-datatable-pagination {
+  @mixin rtl {
+    flex-direction: row-reverse !important;
+  }
+}
+.mantine-datatable-pagination-text {
+  @mixin rtl {
+    text-align: left;
+  }
+}
+
+.mantine-datatable-scroll-area-left-shadow {
+  @mixin rtl {
+    z-index: 0 !important;
+    opacity: 1 !important;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: var(--mantine-spacing-xs);
+    background: var(--mantine-datatable-shadow-background-left);
+  }
+}
+
+.mantine-datatable-scroll-area-right-shadow {
+  @mixin rtl {
+    z-index: 3 !important;
+    opacity: 0 !important;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    width: var(--mantine-spacing-xs);
+    background: var(--mantine-datatable-shadow-background-right);
+  }
+}
+.mantine-datatable-header,
+.mantine-datatable-pin-last-column
+  td:not(.mantine-datatable-row-expansion-cell):last-of-type,
+.mantine-datatable-pin-last-column
+  th:not(.mantine-datatable-column-group-header-cell):last-of-type,
+.mantine-datatable-pin-last-column
+  td:not(.mantine-datatable-row-expansion-cell):last-of-type {
+  @mixin rtl {
+    position: sticky;
+    z-index: 1;
+    left: 0;
+  }
+}
+
+.mantine-datatable-pin-last-column th:last-of-type::after,
+.mantine-datatable-pin-last-column
+  tr[data-with-row-border]:not(:last-of-type)
+  td:not(.mantine-datatable-row-expansion-cell):last-of-type::after {
+  @mixin rtl {
+    right: calc(-1 * var(--mantine-spacing-xs)) !important;
+    border-right: 0px;
+    background: var(--mantine-datatable-shadow-background-left);
+  }
+}
+.mantine-datatable-pin-last-column
+  td:not(.mantine-datatable-row-expansion-cell):last-of-type::after {
+  @mixin rtl {
+    right: calc(-1 * var(--mantine-spacing-xs)) !important;
+    border-right: 0px;
+    background: var(--mantine-datatable-shadow-background-left);
+  }
+}
+.mantine-datatable-pin-last-column
+  th:not(.mantine-datatable-column-group-header-cell):last-of-type::after,
+.mantine-datatable-pin-last-column
+  td:not(.mantine-datatable-row-expansion-cell):last-of-type::after {
+  @mixin rtl {
+    border-right: 0px;
+    background: var(--mantine-datatable-shadow-background-left);
+  }
+}
